@@ -58,9 +58,3 @@ void Level_loadMap(int levelNo)
 }
 
 
-int main()
-{
-    printf("%d", getLevelFromFile());
-
-    return 0;
-}

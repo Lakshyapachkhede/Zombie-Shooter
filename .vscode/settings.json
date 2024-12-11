@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "algorithm": "c",
-        "cstdlib": "c"
+        "cstdlib": "c",
+        "player.h": "c",
+        "settings.h": "c",
+        "levels.h": "c"
     }
 }

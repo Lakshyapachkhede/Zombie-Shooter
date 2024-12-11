@@ -9,6 +9,7 @@
 #define TILE_SIZE 32
 #define MAP_LAYERS 4
 #define BACKGROUND_SIZE (MAP_SIZE * TILE_SIZE)
+#define CAMERA_EDGE_MARGIN 200
 
 
 #endif // SETTINGS_H

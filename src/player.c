@@ -1,23 +1,27 @@
 #include "player.h"
 #include "graphics.h"
-#include "vector2.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include "settings.h"
 
 
-void Player_createPlayer(SDL_Renderer *renderer, int x, int y, char *animationFramesPath, float speed, float animationSpeed)
+Player *Player_createPlayer(SDL_Renderer *renderer, int x, int y, char *animationFramesPath, float speed, float animationSpeed)
 {
-    Player player;
-    Player_loadAnimationFrames(&player, renderer, "../assets/images/player");
-    player.image = player.animationFrames[0][0];
-    player.frameIndex = 0;
-    player.animationDirection = ANIMATION_DOWN;
-    player.direction = (Vector2){0, 0};
-    player.speed = speed;
+    Player *player = (Player*) malloc(sizeof(Player));
+    
+    Player_loadAnimationFrames(&player, renderer, animationFramesPath);
+    player->image = player->animationFrames[0][0];
+    player->frameIndex = 0;
+    player->animationDirection = ANIMATION_DOWN;
+    player->direction = (Vector2){0, 0};
+    player->speed = speed;
 
-    player.rect = (SDL_FRect){x, y, 0, 0};
-    SDL_QueryTexture(player.image, NULL, NULL, &player.rect.w, &player.rect.h);
+    player->rect = (SDL_FRect){x, y, 0, 0};
+    SDL_QueryTexture(player->image, NULL, NULL, &player->rect.w, &player->rect.h);
 
-    player.animationSpeed = animationSpeed;
+    player->animationSpeed = animationSpeed;
+
+    return player;
 
 }
 
@@ -51,6 +55,14 @@ void Player_move(Player *player)
 {   
     player->rect.x += player->speed * player->direction.x;
     player->rect.y += player->speed * player->direction.y;
+
+           
+    if (player->rect.x < 0) player->rect.x = 0;
+    if (player->rect.y < 0) player->rect.y = 0;
+    if (player->rect.x > BACKGROUND_SIZE - player->rect.w) player->rect.x = BACKGROUND_SIZE - player->rect.x;
+    if (player->rect.y > BACKGROUND_SIZE - player->rect.h) player->rect.y = BACKGROUND_SIZE - player->rect.y;
+
+
 }
 
 void Player_Animate(Player *player)
@@ -69,11 +81,23 @@ void Player_Animate(Player *player)
         else
             player->animationDirection = ANIMATION_DOWN;
     }
+
+    player->frameIndex += player->animationSpeed;
+    player->image = player->animationFrames[player->animationDirection][(int)(player->frameIndex) % ANIMATION_FRAMES];
+
+
 }      
 
-void Player_Update(Player *player, Uint8 *keyState)
+void Player_renderPlayer(Player *player, SDL_Renderer *renderer)
+{
+    Graphics_renderTextureF(renderer, player->image, &player->rect);
+}
+
+
+void Player_Update(Player *player, Uint8 *keyState, SDL_Renderer *renderer)
 {
     Player_Input(player, keyState);
     Player_move(player);
     Player_Animate(player);
+    Player_renderPlayer(player, renderer);
 }

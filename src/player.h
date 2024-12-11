@@ -27,7 +27,7 @@ typedef struct
 
 } Player;
 
-void Player_createPlayer(SDL_Renderer *renderer, int x, int y, char *animationFramesPath, float speed, float animationSpeed);
+Player *Player_createPlayer(SDL_Renderer *renderer, int x, int y, char *animationFramesPath, float speed, float animationSpeed);
 
 void Player_loadAnimationFrames(Player *player, SDL_Renderer *renderer, char *animationFramesPath);
 
@@ -37,6 +37,8 @@ void Player_move(Player *player);
 
 void Player_Animate(Player *player);
 
-void Player_Update(Player *player, Uint8 *keyState);
+void Player_Update(Player *player, Uint8 *keyState, SDL_Renderer *renderer);
+
+void Player_renderPlayer(Player *player, SDL_Renderer *renderer);
 
 #endif
