@@ -74,11 +74,13 @@ void Graphics_cleanupGraphics(SDL_Window* window, SDL_Renderer *renderer)
 }
 
 
-SDL_Texture* Graphics_getTextureFromPath(SDL_Renderer *renderer, const char* path)
+SDL_Texture* Graphics_getTextureFromPath(SDL_Renderer *renderer, char* path)
 {
     SDL_Texture *texture = IMG_LoadTexture(renderer, path);
     if (!texture)
     {
-        SDL_Log("Unable to load texture: %S", IMG_GetError());
+        SDL_Log("Unable to load texture: %s", IMG_GetError());
     }
+
+    return texture;
 }

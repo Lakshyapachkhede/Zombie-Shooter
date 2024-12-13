@@ -7,17 +7,19 @@
 #include "input.h"
 #include "utils.h"
 #include "graphics.h"
+#include <SDL2/SDL.h>
+#include <stdio.h>
 
-void Game_initGame(SDL_Renderer *renderer, int levelNo, Player **player, SDL_Rect **camera)
+void Game_initGame(SDL_Renderer *renderer, int levelNo, Player **player, SDL_FRect **camera)
 {
-    *player = Player_createPlayer(renderer, WINDOW_WIDTH / 2, WINDOW_HEIGHT /2, "../assets/images/player", 5, 5);
+    *player = Player_createPlayer(renderer, WINDOW_WIDTH / 2, WINDOW_HEIGHT /2, "../assets/images/player", 5, 1);
     Map_loadLayersAndMap(levelNo);
     Map_loadMapTextures(renderer);
     
-    *camera = Utils_createRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    *camera = Utils_createFRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
-void Game_gameLoop(SDL_Renderer *renderer, Player *player, SDL_Rect *camera)
+void Game_gameLoop(SDL_Renderer *renderer, Player *player, SDL_FRect *camera)
 {   
     bool run = true;
     SDL_Event e;
@@ -26,13 +28,15 @@ void Game_gameLoop(SDL_Renderer *renderer, Player *player, SDL_Rect *camera)
     {
         Input_processEvent(&e, &run);
 
+        const Uint8 *keyState = SDL_GetKeyboardState(NULL);
+  
         updateCamera(player, camera);
 
         Graphics_clearScreen(renderer);
 
         Map_renderMap(renderer, camera);
-        
-        Player_Update(player, SDL_GetKeyboardState(NULL), renderer);
+
+        Player_Update(player, keyState, renderer, camera);
 
         Graphics_presentScreen(renderer);
 
@@ -43,7 +47,7 @@ void Game_gameLoop(SDL_Renderer *renderer, Player *player, SDL_Rect *camera)
 
 }
 
-void updateCamera(Player *player, SDL_Rect *camera)
+void updateCamera(Player *player, SDL_FRect *camera)
 {
     // adjust camera positions
     if (player->rect.x < camera->x + CAMERA_EDGE_MARGIN) camera->x = player->rect.x - CAMERA_EDGE_MARGIN;
@@ -56,4 +60,6 @@ void updateCamera(Player *player, SDL_Rect *camera)
     if (camera->y < 0) camera->y = 0;
     if (camera->x > BACKGROUND_SIZE - WINDOW_WIDTH) camera->x = BACKGROUND_SIZE - WINDOW_WIDTH;
     if (camera->y > BACKGROUND_SIZE - WINDOW_HEIGHT) camera->y = BACKGROUND_SIZE - WINDOW_HEIGHT;
+
+
 }   

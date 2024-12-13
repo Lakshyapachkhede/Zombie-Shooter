@@ -18,7 +18,7 @@ void Map_loadLayersAndMap(int levelNo);
 void Map_loadMapTextures(SDL_Renderer *renderer);
 
 
-void Map_renderMap(SDL_Renderer *renderer, SDL_Rect *cameraRect);
+void Map_renderMap(SDL_Renderer *renderer, SDL_FRect *camera);
 
 
 #endif // MAP_H

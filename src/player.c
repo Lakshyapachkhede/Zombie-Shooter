@@ -2,22 +2,28 @@
 #include "graphics.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "utils.h"
 #include "settings.h"
 
 
-Player *Player_createPlayer(SDL_Renderer *renderer, int x, int y, char *animationFramesPath, float speed, float animationSpeed)
+Player *Player_createPlayer(SDL_Renderer *renderer, float x, float y, char *animationFramesPath, int speed, int animationSpeed)
 {
     Player *player = (Player*) malloc(sizeof(Player));
     
-    Player_loadAnimationFrames(&player, renderer, animationFramesPath);
+    Player_loadAnimationFrames(player, renderer, animationFramesPath);
     player->image = player->animationFrames[0][0];
     player->frameIndex = 0;
     player->animationDirection = ANIMATION_DOWN;
-    player->direction = (Vector2){0, 0};
+    player->direction = (Vector2){0.0f, 0.0f};
     player->speed = speed;
 
     player->rect = (SDL_FRect){x, y, 0, 0};
-    SDL_QueryTexture(player->image, NULL, NULL, &player->rect.w, &player->rect.h);
+
+    int playerWidth, playerHeight;
+    SDL_QueryTexture(player->image, NULL, NULL, &playerWidth, &playerHeight);
+
+    player->rect.w = playerWidth;
+    player->rect.h = playerHeight;
 
     player->animationSpeed = animationSpeed;
 
@@ -34,7 +40,7 @@ void Player_loadAnimationFrames(Player *player, SDL_Renderer *renderer, char *an
     {
         for (int j = 0; j < ANIMATION_FRAMES; j++)
         {   
-            char* filePath[40];
+            char filePath[40];
             sprintf(filePath, "%s/%s/%d.png", animationFramesPath, animationDirectionDir[i], j);
             player->animationFrames[i][j] = Graphics_getTextureFromPath(renderer, filePath);
         }
@@ -42,10 +48,10 @@ void Player_loadAnimationFrames(Player *player, SDL_Renderer *renderer, char *an
 
 }
 
-void Player_Input(Player *player, Uint8 *keyState)
+void Player_Input(Player *player, const Uint8 *keyState)
 {
-    player->direction.x = (int)(keyState[SDL_SCANCODE_RIGHT] || keyState[SDL_SCANCODE_D]) - (int)(keyState[SDL_SCANCODE_LEFT] || keyState[SDL_SCANCODE_A]);
-    player->direction.y = (int)(keyState[SDL_SCANCODE_DOWN] || keyState[SDL_SCANCODE_S]) - (int)(keyState[SDL_SCANCODE_UP] || keyState[SDL_SCANCODE_W]);
+    player->direction.x = (float)(keyState[SDL_SCANCODE_RIGHT] || keyState[SDL_SCANCODE_D]) - (float)(keyState[SDL_SCANCODE_LEFT] || keyState[SDL_SCANCODE_A]);
+    player->direction.y = (float)(keyState[SDL_SCANCODE_DOWN] || keyState[SDL_SCANCODE_S]) - (float)(keyState[SDL_SCANCODE_UP] || keyState[SDL_SCANCODE_W]);
 
     if (player->direction.x != 0 && player->direction.y != 0) // for normalising digonal movement
         player->direction = Vector2_Normalise(player->direction);
@@ -59,9 +65,9 @@ void Player_move(Player *player)
            
     if (player->rect.x < 0) player->rect.x = 0;
     if (player->rect.y < 0) player->rect.y = 0;
-    if (player->rect.x > BACKGROUND_SIZE - player->rect.w) player->rect.x = BACKGROUND_SIZE - player->rect.x;
-    if (player->rect.y > BACKGROUND_SIZE - player->rect.h) player->rect.y = BACKGROUND_SIZE - player->rect.y;
-
+    if (player->rect.x > BACKGROUND_SIZE - player->rect.w) player->rect.x = BACKGROUND_SIZE - player->rect.w;
+    if (player->rect.y > BACKGROUND_SIZE - player->rect.h) player->rect.y = BACKGROUND_SIZE - player->rect.h;
+  
 
 }
 
@@ -88,16 +94,19 @@ void Player_Animate(Player *player)
 
 }      
 
-void Player_renderPlayer(Player *player, SDL_Renderer *renderer)
-{
-    Graphics_renderTextureF(renderer, player->image, &player->rect);
+void Player_renderPlayer(Player *player, SDL_Renderer *renderer, SDL_FRect *camera)
+{   
+    SDL_FRect destRect = (SDL_FRect){player->rect.x - camera->x, player->rect.y - camera->y, player->rect.w, player->rect.h};
+    Graphics_renderTextureF(renderer, player->image, &destRect);
+
 }
 
 
-void Player_Update(Player *player, Uint8 *keyState, SDL_Renderer *renderer)
+void Player_Update(Player *player, const Uint8 *keyState, SDL_Renderer *renderer, SDL_FRect *camera)
 {
     Player_Input(player, keyState);
     Player_move(player);
     Player_Animate(player);
-    Player_renderPlayer(player, renderer);
+    Player_renderPlayer(player, renderer, camera);
+
 }

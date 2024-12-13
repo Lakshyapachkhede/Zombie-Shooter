@@ -1,7 +1,7 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-#include "SDL2/SDL.h"
+#include <SDL2/SDL.h>
 
 int Graphics_initializeGraphics(SDL_Window **window, SDL_Renderer **renderer, const char *title, int width, int height);
 
@@ -15,7 +15,7 @@ void Graphics_presentScreen(SDL_Renderer *renderer);
 
 void Graphics_cleanupGraphics(SDL_Window* window, SDL_Renderer *renderer);
 
-SDL_Texture* Graphics_getTextureFromPath(SDL_Renderer *renderer, const char* path);
+SDL_Texture* Graphics_getTextureFromPath(SDL_Renderer *renderer, char* path);
 
 
 #endif // GRAPHICS_H

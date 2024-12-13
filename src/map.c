@@ -49,7 +49,7 @@ void Map_loadMapTextures(SDL_Renderer *renderer)
     }
 }
 
-void Map_renderMap(SDL_Renderer *renderer, SDL_Rect cameraRect)
+void Map_renderMap(SDL_Renderer *renderer, SDL_FRect *camera)
 {
     for (int layer = 0; layer < MAP_LAYERS; layer++)
     { // Loop through layers
@@ -57,12 +57,12 @@ void Map_renderMap(SDL_Renderer *renderer, SDL_Rect cameraRect)
         { // Loop through rows
             for (int j = 0; j < MAP_SIZE; j++)
             { // Loop through columns
-                int tileX = j * TILE_SIZE - cameraRect.x;
-                int tileY = i * TILE_SIZE - cameraRect.y;
+                int tileX = j * TILE_SIZE - camera->x;
+                int tileY = i * TILE_SIZE - camera->y;
 
                 // Check if the tile is visible on the screen
-                if (tileX + TILE_SIZE >= 0 && tileX <= cameraRect.w &&
-                    tileY + TILE_SIZE >= 0 && tileY <= cameraRect.h)
+                if (tileX + TILE_SIZE >= 0 && tileX <= WINDOW_WIDTH &&
+                    tileY + TILE_SIZE >= 0 && tileY <= WINDOW_HEIGHT)
                 {
 
                     int tileID = Map_LayersMapGrid[layer][i][j]; // Get tile ID from the 3D matrix

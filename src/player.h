@@ -14,31 +14,30 @@
 typedef struct 
 {
     SDL_FRect rect;
-
     SDL_Texture *image;
     SDL_Texture *animationFrames[ANIMATION_DIRECTIONS][ANIMATION_FRAMES];
     int frameIndex;
     int animationDirection;
 
-
     Vector2 direction;
-    float speed;
-    float animationSpeed;
+    int speed;
+    int animationSpeed;
 
 } Player;
 
-Player *Player_createPlayer(SDL_Renderer *renderer, int x, int y, char *animationFramesPath, float speed, float animationSpeed);
+Player *Player_createPlayer(SDL_Renderer *renderer, float x, float y, char *animationFramesPath, int speed, int animationSpeed);
 
 void Player_loadAnimationFrames(Player *player, SDL_Renderer *renderer, char *animationFramesPath);
 
-void Player_Input(Player *player, Uint8 *keyState);
+void Player_Input(Player *player, const Uint8 *keyState);
 
 void Player_move(Player *player);
 
 void Player_Animate(Player *player);
 
-void Player_Update(Player *player, Uint8 *keyState, SDL_Renderer *renderer);
+void Player_renderPlayer(Player *player, SDL_Renderer *renderer, SDL_FRect *camera);
 
-void Player_renderPlayer(Player *player, SDL_Renderer *renderer);
+void Player_Update(Player *player, const Uint8 *keyState, SDL_Renderer *renderer, SDL_FRect *camera);
+
 
 #endif

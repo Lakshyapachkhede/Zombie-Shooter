@@ -1,5 +1,5 @@
-#ifndef VECTOR_2.H
-#define VECTOR_2.H
+#ifndef VECTOR_2_H
+#define VECTOR_2_H
 
 typedef struct Vector2 {
     float x;

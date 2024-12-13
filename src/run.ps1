@@ -6,8 +6,8 @@ $sdlLibs = @("SDL2.dll", "SDL2_image.dll")  # SDL libraries to copy to output
 
 
 # Paths for SDL2 headers and libraries (adjust these paths for your setup)
-$sdlIncludePath = "..\libs\sdl2\include"
-$sdlLibPath = "..\libs\sdl2\lib"
+$sdlIncludePath = ".\libs\sdl2\include"
+$sdlLibPath = ".\libs\sdl2\lib"
 
 # Update compile flags to include paths
 
@@ -28,7 +28,7 @@ if (-not $sourceFiles) {
 
 # Set compiler and flags
 $compiler = "gcc"
-$compileFlags = "-I$sdlIncludePath -L$sdlLibPath -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -std=c99 -Wall -Wextra -I$sourceDir"
+$compileFlags = "-I$sdlIncludePath -L$sdlLibPath -L$sourceDir -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -std=c99 -Wall -Wextra -I$sourceDir"
 $compileCommand = "$compiler $($sourceFiles -join ' ') $compileFlags -o $outputDir\$outputFile"
 
 # Compile the source files
@@ -57,5 +57,7 @@ foreach ($lib in $sdlLibs) {
 
 # Run the executable
 Write-Host "Running the program..." -ForegroundColor Yellow
-$executionCommand = "$outputDir\$outputFile"
+Invoke-Expression -Command "cd $outputDir"
+$executionCommand = ".\$outputFile"
 Invoke-Expression -Command $executionCommand
+Invoke-Expression -Command "cd ..\"
