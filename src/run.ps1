@@ -2,7 +2,7 @@
 $sourceDir = ".\src"  # Directory containing source files
 $outputDir = ".\bin"  # Output directory for the compiled executable
 $outputFile = "game.exe"  # Output executable name
-$sdlLibs = @("SDL2.dll", "SDL2_image.dll")  # SDL libraries to copy to output
+$sdlLibs = @("SDL2.dll", "SDL2_image.dll", "SDL2_mixer.dll")  # SDL libraries to copy to output
 
 
 # Paths for SDL2 headers and libraries (adjust these paths for your setup)
@@ -28,7 +28,7 @@ if (-not $sourceFiles) {
 
 # Set compiler and flags
 $compiler = "gcc"
-$compileFlags = "-I$sdlIncludePath -L$sdlLibPath -L$sourceDir -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -std=c99 -Wall -Wextra -I$sourceDir"
+$compileFlags = "-I$sdlIncludePath -L$sdlLibPath -L$sourceDir -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -std=c99 -Wall -Wextra -I$sourceDir"
 $compileCommand = "$compiler $($sourceFiles -join ' ') $compileFlags -o $outputDir\$outputFile"
 
 # Compile the source files

@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include "vector2.h"
 
+
 #define ANIMATION_FRAMES 4
 #define ANIMATION_DIRECTIONS 4
 #define ANIMATION_DOWN 0

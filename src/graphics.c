@@ -70,6 +70,7 @@ void Graphics_cleanupGraphics(SDL_Window* window, SDL_Renderer *renderer)
 {
     if (renderer) SDL_DestroyRenderer(renderer);
     if (window) SDL_DestroyWindow(window);
+    IMG_Quit();
     SDL_Quit();
 }
 

@@ -1,5 +1,4 @@
 #include "game.h"
-#include "player.h"
 #include "settings.h"
 #include "levels.h"
 #include "map.h"
@@ -10,16 +9,17 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 
-void Game_initGame(SDL_Renderer *renderer, int levelNo, Player **player, SDL_FRect **camera)
+void Game_initGame(SDL_Renderer *renderer, int levelNo, Player **player, Gun **gun, SDL_FRect **camera)
 {
     *player = Player_createPlayer(renderer, WINDOW_WIDTH / 2, WINDOW_HEIGHT /2, "../assets/images/player", 5, 1);
+    *gun = Gun_CreateGun(renderer, 100, "../assets/audio/pistol.wav", "../assets/images/aim.png", "../assets/images/bullet/bullet.png");
     Map_loadLayersAndMap(levelNo);
     Map_loadMapTextures(renderer);
     
     *camera = Utils_createFRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
-void Game_gameLoop(SDL_Renderer *renderer, Player *player, SDL_FRect *camera)
+void Game_gameLoop(SDL_Renderer *renderer, Player *player, Gun *gun, SDL_FRect *camera)
 {   
     bool run = true;
     SDL_Event e;
@@ -35,6 +35,10 @@ void Game_gameLoop(SDL_Renderer *renderer, Player *player, SDL_FRect *camera)
         Graphics_clearScreen(renderer);
 
         Map_renderMap(renderer, camera);
+
+        int mouseX, mouseY;
+        Uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
+        Gun_Update(gun, renderer, player, buttons, mouseX, mouseY, camera);
 
         Player_Update(player, keyState, renderer, camera);
 
