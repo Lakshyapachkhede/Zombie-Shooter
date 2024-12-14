@@ -12,7 +12,9 @@
 #include "player.h"
 #include "utils.h"
 
-#define INITIAL_BULLET_NO 50
+#define GUN_AIM_DISTANCE 100
+#define GUN_AIM_SIZE 30
+#define INITIAL_BULLET_NO 20
 
 typedef struct 
 {
@@ -31,9 +33,11 @@ typedef struct
     Uint32 shootTime;
     bool canShoot;
 
+    int damage;
+
 }Gun;
 
-Gun *Gun_CreateGun(SDL_Renderer *renderer, int coolDownTime, char *soundPath, char *aimImagePath, char *bulletImagePath);
+Gun *Gun_CreateGun(SDL_Renderer *renderer, int coolDownTime, char *soundPath, char *aimImagePath, char *bulletImagePath, int damage);
 
 void Gun_Input(Gun *gun, Player *player, Uint32 buttons, int mouseX, int mouseY);
 

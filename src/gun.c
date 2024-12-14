@@ -1,6 +1,6 @@
 #include "gun.h"
 
-Gun *Gun_CreateGun(SDL_Renderer *renderer, int coolDownTime, char *soundPath, char *aimImagePath, char *bulletImagePath)
+Gun *Gun_CreateGun(SDL_Renderer *renderer, int coolDownTime, char *soundPath, char *aimImagePath, char *bulletImagePath, int damage)
 {
     Gun *gun = (Gun *)malloc(sizeof(Gun));
     gun->coolDownTime = coolDownTime;
@@ -16,6 +16,8 @@ Gun *Gun_CreateGun(SDL_Renderer *renderer, int coolDownTime, char *soundPath, ch
     gun->bullets = Bullet_CreateBulletArray(INITIAL_BULLET_NO);
 
     gun->canShoot = false;
+
+    gun->damage = damage;
 
     return gun;
 }
@@ -33,14 +35,14 @@ void Gun_Input(Gun *gun, Player *player, Uint32 buttons, int mouseX, int mouseY)
 
 void Gun_RenderAim(Gun *gun, SDL_Renderer *renderer, Player *player, SDL_FRect *camera)
 {
-    SDL_FRect * destRect = Utils_createFRect((player->rect.x + 100 * gun->direction.x) - camera->x, (player->rect.y + 100 * gun->direction.y) - camera->y, 30, 30);
+    SDL_FRect * destRect = Utils_createFRect((player->rect.x + GUN_AIM_DISTANCE * gun->direction.x) - camera->x, (player->rect.y + GUN_AIM_DISTANCE * gun->direction.y) - camera->y, GUN_AIM_SIZE, GUN_AIM_SIZE);
     Graphics_renderTextureF(renderer, gun->aimImage, destRect);
 }
 
 void Gun_Shoot(Gun *gun, Player *player)
 {   
     Audio_PlaySound(gun->sound);
-    Bullet_AddBulletInArray(gun->bullets, gun->bulletImage, (player->rect.x + 50 * player->direction.x), (player->rect.y + 50 * player->direction.y), gun->direction);
+    Bullet_AddBulletInArray(gun->bullets, gun->bulletImage, (player->rect.x + BULLET_DISTANCE_FROM_PLAYER * player->direction.x), (player->rect.y + BULLET_DISTANCE_FROM_PLAYER * player->direction.y), gun->direction, gun->damage);
     gun->canShoot = false;
     gun->shootTime = SDL_GetTicks();
 }

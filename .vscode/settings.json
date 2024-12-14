@@ -24,6 +24,9 @@
         "stdexcept": "cpp",
         "system_error": "cpp",
         "typeinfo": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "gun.h": "c",
+        "bullet.h": "c",
+        "enemy.h": "c"
     }
 }

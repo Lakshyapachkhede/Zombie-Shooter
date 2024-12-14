@@ -3,6 +3,7 @@
 
 #define BULLET_SPEED 100
 #define BULLET_LIFETIME 1000
+#define BULLET_DISTANCE_FROM_PLAYER 50
 
 #include <SDL2/SDL.h>
 #include <stdlib.h>
@@ -19,6 +20,7 @@ typedef struct
     SDL_FRect rect;
     Vector2 direction;
     Uint32 spawnTime;
+    int damage;
 }Bullet;
 
 typedef struct 
@@ -28,7 +30,7 @@ typedef struct
     size_t capacity;
 }BulletArray;
 
-Bullet *Bullet_CreateBullet(SDL_Texture *image, float x, float y, Vector2 direction, Uint32 spawnTime);
+Bullet *Bullet_CreateBullet(SDL_Texture *image, float x, float y, Vector2 direction, Uint32 spawnTime, int damage);
 
 void Bullet_UpdateBullet(Bullet *bullet);
 
@@ -36,7 +38,7 @@ void Bullet_RenderBullet(Bullet *bullet, SDL_Renderer *renderer, SDL_FRect *came
 
 BulletArray *Bullet_CreateBulletArray(size_t capacity);
 
-void Bullet_AddBulletInArray(BulletArray *array, SDL_Texture *image, float x, float y, Vector2 direction);
+void Bullet_AddBulletInArray(BulletArray *array, SDL_Texture *image, float x, float y, Vector2 direction, int damage);
 
 void Bullet_UpdateBulletsFromArray(BulletArray *array, SDL_Renderer *renderer, SDL_FRect *camera);
 

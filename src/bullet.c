@@ -1,7 +1,7 @@
 #include "bullet.h"
 
 
-Bullet *Bullet_CreateBullet(SDL_Texture *image, float x, float y, Vector2 direction, Uint32 spawnTime)
+Bullet *Bullet_CreateBullet(SDL_Texture *image, float x, float y, Vector2 direction, Uint32 spawnTime, int damage)
 {   
     Bullet *bullet = (Bullet*)malloc(sizeof(Bullet));
 
@@ -16,6 +16,8 @@ Bullet *Bullet_CreateBullet(SDL_Texture *image, float x, float y, Vector2 direct
     bullet->direction = direction;
 
     bullet->spawnTime = spawnTime;
+
+    bullet->damage = damage;
 
     return bullet;
 }
@@ -42,7 +44,7 @@ BulletArray *Bullet_CreateBulletArray(size_t capacity)
     return array;
 }
 
-void Bullet_AddBulletInArray(BulletArray *array, SDL_Texture *image, float x, float y, Vector2 direction)
+void Bullet_AddBulletInArray(BulletArray *array, SDL_Texture *image, float x, float y, Vector2 direction, int damage)
 {
     if (array->size >= array->capacity)
     {
@@ -50,7 +52,7 @@ void Bullet_AddBulletInArray(BulletArray *array, SDL_Texture *image, float x, fl
         array->bullets = (Bullet **)realloc(array->bullets, array->capacity * sizeof(Bullet*));
     }
 
-    array->bullets[array->size++] = Bullet_CreateBullet(image, x, y, direction, SDL_GetTicks());
+    array->bullets[array->size++] = Bullet_CreateBullet(image, x, y, direction, SDL_GetTicks(), damage);
 }
 
 
