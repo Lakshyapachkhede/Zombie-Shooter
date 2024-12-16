@@ -1,20 +1,26 @@
 #ifndef ENEMY_H
 #define ENEMY_H
-#include <SDL2\SDL.h>
+#include <SDL2/SDL.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include "settings.h"
 #include "player.h"
 #include "vector2.h"
+#include <math.h>
+#include "graphics.h"
+#include "bullet.h"
+#include "collision.h"
 
+
+#define INITIAL_ENEMY_ARRAY_SIZE 10
 
 #define ENEMY_FRAME_SIZE 64
 
-#define ANIMATION_DIRECTIONS 4
-#define ANIMATION_UP 0
-#define ANIMATION_RIGHT 1
-#define ANIMATION_DOWN 2
-#define ANIMATION_LEFT 3
+#define ENEMY_ANIMATION_DIRECTIONS 4
+#define ENEMY_ANIMATION_UP 0
+#define ENEMY_ANIMATION_RIGHT 3
+#define ENEMY_ANIMATION_DOWN 2
+#define ENEMY_ANIMATION_LEFT 1
 
 #define ENEMY_WALK_FRAMES 6
 #define ENEMY_ATTACK_FRAMES 4
@@ -52,13 +58,16 @@ SDL_Rect ENEMY_ANIMATION_DEATH_SOURCE_RECT[ENEMY_DEATH_FRAMES];
 
 typedef struct 
 {
-    Player *player;
-
     SDL_Texture *spriteSheet;
+
+    Player *player;
 
     SDL_FRect rect;
 
+    int state;
+
     int frameIndex;
+    int animationDirection;
     int animationSpeed;
 
     int health;
@@ -68,18 +77,35 @@ typedef struct
 
     bool isDied;
     Uint32 deathTime;
-    int deathDuration;
-
-
-
+    Uint32 deathDuration;
 }Enemy;
 
-void Enemy_Init();
+typedef struct 
+{
+    Enemy **enemies;
+    size_t size;
+    size_t capacity;
+}EnemyArray;
 
-Enemy *Enemy_CreateEnemy(SDL_Renderer *renderer, Player *player, float x, float y, char *animationFramesPath, int animationSpeed, Vector2 direction, int speed, int deathDuration, int health);
-void Enemy_loadAnimationFrames(Enemy *enemy, SDL_Renderer *renderer, char *animationFramesPath)
+SDL_Texture *bloodTexture;
+
+void Enemy_Init(SDL_Renderer *renderer);
+Enemy *Enemy_CreateEnemy(SDL_Renderer *renderer, Player *player, float x, float y, char *spriteSheetPath, int animationSpeed, Vector2 direction, int speed, int deathDuration, int health);
+void Enemy_UpdateDirection(Enemy *enemy);
+void Enemy_move(Enemy *enemy);
+void Enemy_Animate(Enemy *enemy);
+void Enemy_UpdateEnemyPositionOnCollision(Enemy *enemy, EnemyArray *otherEnemies);
+void Enemy_renderEnemy(Enemy *enemy, SDL_Renderer *renderer, SDL_FRect *camera);
+void Enemy_Update(Enemy *enemy, SDL_Renderer *renderer, SDL_FRect *camera, EnemyArray *otherEnemies);
 
 
+EnemyArray *Enemy_CreateEnemyArray(size_t capacity);
+void Enemy_AddEnemyInArray(EnemyArray *array, SDL_Renderer *renderer, Player *player, float x, float y, char *spriteSheetPath, int animationSpeed, Vector2 direction, int speed, int deathDuration, int health);
+void Enemy_RemoveEnemyFromArray(EnemyArray *array, size_t index);
+void Enemy_RenderEnemiesFromArray(EnemyArray *array, SDL_Renderer *renderer, SDL_FRect *camera);
+void Enemy_DestroyEnemyArray(EnemyArray *array);
+void Enemy_UpdateEnemiesFromArray(EnemyArray *array, SDL_Renderer *renderer, SDL_FRect *camera);
 
+void Enemy_HandleBulletEnemyCollisions(EnemyArray *enemyArray, BulletArray *bulletArray);
 
 #endif 

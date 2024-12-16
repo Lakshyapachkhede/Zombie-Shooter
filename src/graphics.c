@@ -54,6 +54,7 @@ void Graphics_renderTextureF(SDL_Renderer *renderer, SDL_Texture *texture, SDL_F
 }
 
 
+
 void Graphics_renderTexture(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *rect)
 {
     SDL_RenderCopy(renderer, texture, NULL, rect);
@@ -85,3 +86,4 @@ SDL_Texture* Graphics_getTextureFromPath(SDL_Renderer *renderer, char* path)
 
     return texture;
 }
+

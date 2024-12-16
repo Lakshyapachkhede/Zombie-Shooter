@@ -5,6 +5,7 @@
 #include "audio.h"
 #include "player.h"
 #include "gun.h"
+#include "enemy.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,9 +21,10 @@ int main(int argc, char *argv[])
     Player *player = NULL;
     Gun *gun = NULL;
     SDL_FRect* camera = NULL;
-    Game_initGame(renderer, Level_getLevelNumberFromFile(), &player, &gun, &camera);
+    EnemyArray *enemies = NULL;
+    Game_initGame(renderer, Level_getLevelNumberFromFile(), &player, &gun, &enemies, &camera);
 
-    Game_gameLoop(renderer, player, gun, camera);
+    Game_gameLoop(renderer, player, gun, enemies, camera);
 
     Graphics_cleanupGraphics(window, renderer);
     Audio_CleanUpAudio();

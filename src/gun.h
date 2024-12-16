@@ -12,9 +12,11 @@
 #include "player.h"
 #include "utils.h"
 
+#define GUN_PISTOL_DAMAGE 50
+
 #define GUN_AIM_DISTANCE 100
 #define GUN_AIM_SIZE 30
-#define INITIAL_BULLET_NO 20
+#define INITIAL_BULLET_NO 10
 
 typedef struct 
 {

@@ -27,6 +27,7 @@
         "utility": "cpp",
         "gun.h": "c",
         "bullet.h": "c",
-        "enemy.h": "c"
+        "enemy.h": "c",
+        "collision.h": "c"
     }
 }

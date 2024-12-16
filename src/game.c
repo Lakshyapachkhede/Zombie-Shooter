@@ -8,24 +8,36 @@
 #include "graphics.h"
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include "enemy.h"
+#include "collision.h"
 
-void Game_initGame(SDL_Renderer *renderer, int levelNo, Player **player, Gun **gun, SDL_FRect **camera)
+void Game_initGame(SDL_Renderer *renderer, int levelNo, Player **player, Gun **gun, EnemyArray **enemies, SDL_FRect **camera)
 {
     *player = Player_createPlayer(renderer, WINDOW_WIDTH / 2, WINDOW_HEIGHT /2, "../assets/images/player", 5, 1);
-    *gun = Gun_CreateGun(renderer, 100, "../assets/audio/pistol.wav", "../assets/images/aim.png", "../assets/images/bullet/bullet.png");
+    *gun = Gun_CreateGun(renderer, 100, "../assets/audio/pistol.wav", "../assets/images/aim.png", "../assets/images/bullet/bullet.png", GUN_PISTOL_DAMAGE);
     Map_loadLayersAndMap(levelNo);
     Map_loadMapTextures(renderer);
     
     *camera = Utils_createFRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    Enemy_Init(renderer);
+    *enemies = Enemy_CreateEnemyArray(INITIAL_ENEMY_ARRAY_SIZE);
+
 }
 
-void Game_gameLoop(SDL_Renderer *renderer, Player *player, Gun *gun, SDL_FRect *camera)
+void Game_gameLoop(SDL_Renderer *renderer, Player *player, Gun *gun, EnemyArray *enemies, SDL_FRect *camera)
 {   
     bool run = true;
     SDL_Event e;
-
+    Uint32 time = SDL_GetTicks();
+    Uint32 timeNow;
     while (run)
-    {
+    {   
+        timeNow = SDL_GetTicks();
+        if (timeNow - time > 1000)
+        {
+            Enemy_AddEnemyInArray(enemies, renderer, player, 100, 100, "../assets/images/enemy/spider01.png", 3, (Vector2){0, 0}, 4, 10000, 100);
+            time = timeNow;
+        }
         Input_processEvent(&e, &run);
 
         const Uint8 *keyState = SDL_GetKeyboardState(NULL);
@@ -42,14 +54,19 @@ void Game_gameLoop(SDL_Renderer *renderer, Player *player, Gun *gun, SDL_FRect *
 
         Player_Update(player, keyState, renderer, camera);
 
+        Enemy_UpdateEnemiesFromArray(enemies, renderer, camera);
+
+        Enemy_HandleBulletEnemyCollisions(enemies, gun->bullets);
+
         Graphics_presentScreen(renderer);
 
-        SDL_Delay(16);
-
+        SDL_Delay(16);    
     }
     
 
 }
+
+
 
 void updateCamera(Player *player, SDL_FRect *camera)
 {

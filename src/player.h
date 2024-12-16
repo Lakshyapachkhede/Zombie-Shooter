@@ -12,6 +12,8 @@
 #define ANIMATION_LEFT 2
 #define ANIMATION_RIGHT 3
 
+#define PLAYER_HITBOXRECT_DIFFERENCE 20
+
 typedef struct 
 {
     SDL_FRect rect;
