@@ -54,6 +54,7 @@ typedef struct
 
 }Gun;
 
+
 Gun *Gun_CreateGun(SDL_Renderer *renderer, int gunType, char *aimImagePath, char *bulletImagePath);
 
 void Gun_Input(Gun *gun, Player *player, Uint32 buttons, int mouseX, int mouseY);
@@ -66,5 +67,5 @@ void Gun_Update(Gun *gun, SDL_Renderer *renderer, Player *player, Uint32 buttons
 
 void Gun_ShootPistol(Gun *gun, Player *player);
 void Gun_ShootShotgun(Gun *gun, Player *player);
-
+void Gun_changeGun(Gun *gun);
 #endif

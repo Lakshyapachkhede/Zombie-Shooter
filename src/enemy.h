@@ -10,6 +10,8 @@
 #include "graphics.h"
 #include "bullet.h"
 #include "collision.h"
+#include "audio.h"
+#include <SDL2/SDL_mixer.h>
 
 
 #define INITIAL_ENEMY_ARRAY_SIZE 10
@@ -81,6 +83,7 @@ typedef struct
 
     int damage;
     Uint32 attackTime;
+    Mix_Chunk *deathSound;
 }Enemy;
 
 typedef struct 

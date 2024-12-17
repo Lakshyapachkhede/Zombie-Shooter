@@ -31,9 +31,12 @@ void Game_gameLoop(SDL_Renderer *renderer, Player *player, Gun *gun, EnemyArray 
     Uint32 prevTime = SDL_GetTicks();
     Uint32 timeNow = 0;
 
+    Mix_Music *bgm = Audio_LoadMusic("../assets/music/music1.mp3");
+    Audio_PlayBGM(bgm);
+    Mix_VolumeMusic(100);
+
     while (run)
     {
-
         Input_processEvent(&e, &run);
 
         Level_generateEnemies(&timeNow, &prevTime, renderer, player, enemies, 5000, Utils_generateRandomNumber(5, 10));

@@ -25,8 +25,8 @@ SDL_FRect* Utils_createFRect(float x, float y, float w, float h)
 
 void Utils_generateRandomCoordinates(float *x, float *y)
 {
-    *x = rand() % WINDOW_WIDTH;
-    *y = rand() % WINDOW_HEIGHT;
+    *x = rand() % BACKGROUND_SIZE;
+    *y = rand() % BACKGROUND_SIZE;
 }
 
 int Utils_generateRandomNumber(int min, int max)

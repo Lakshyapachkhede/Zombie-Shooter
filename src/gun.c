@@ -4,9 +4,6 @@ Gun *Gun_CreateGun(SDL_Renderer *renderer, int gunType, char *aimImagePath, char
 {
     Gun *gun = (Gun *)malloc(sizeof(Gun));
 
-
-
-
     gun->aimImage = Graphics_getTextureFromPath(renderer, aimImagePath);
 
     gun->bulletImage = Graphics_getTextureFromPath(renderer, bulletImagePath);
@@ -33,6 +30,7 @@ Gun *Gun_CreateGun(SDL_Renderer *renderer, int gunType, char *aimImagePath, char
         gun->sound = Audio_LoadSound(GUN_SHOTGUN_AUDIO_PATH);
     }
 
+    Mix_VolumeChunk(gun->sound, 50);
 
     return gun;
 }
@@ -45,12 +43,11 @@ void Gun_Input(Gun *gun, Player *player, Uint32 buttons, int mouseX, int mouseY)
     {
         Gun_Shoot(gun, player);
     }
-
 }
 
 void Gun_RenderAim(Gun *gun, SDL_Renderer *renderer, Player *player, SDL_FRect *camera)
 {
-    SDL_FRect * destRect = Utils_createFRect((player->rect.x + GUN_AIM_DISTANCE * gun->direction.x) - camera->x, (player->rect.y + GUN_AIM_DISTANCE * gun->direction.y) - camera->y, GUN_AIM_SIZE, GUN_AIM_SIZE);
+    SDL_FRect *destRect = Utils_createFRect((player->rect.x + GUN_AIM_DISTANCE * gun->direction.x) - camera->x, (player->rect.y + GUN_AIM_DISTANCE * gun->direction.y) - camera->y, GUN_AIM_SIZE, GUN_AIM_SIZE);
     Graphics_renderTextureF(renderer, gun->aimImage, destRect);
 }
 
@@ -72,7 +69,7 @@ void Gun_Update(Gun *gun, SDL_Renderer *renderer, Player *player, Uint32 buttons
 }
 
 void Gun_ShootPistol(Gun *gun, Player *player)
-{   
+{
     Audio_PlaySound(gun->sound);
     Bullet_AddBulletInArray(gun->bullets, gun->bulletImage, (player->rect.x + BULLET_DISTANCE_FROM_PLAYER * player->direction.x), (player->rect.y + BULLET_DISTANCE_FROM_PLAYER * player->direction.y), gun->direction, gun->damage);
     gun->canShoot = false;
@@ -86,13 +83,12 @@ void Gun_ShootShotgun(Gun *gun, Player *player)
 
     // Original bullet (straight)
     Bullet_AddBulletInArray(
-        gun->bullets, 
-        gun->bulletImage, 
+        gun->bullets,
+        gun->bulletImage,
         player->rect.x + BULLET_DISTANCE_FROM_PLAYER * player->direction.x,
         player->rect.y + BULLET_DISTANCE_FROM_PLAYER * player->direction.y,
-        gun->direction, 
-        gun->damage
-    );
+        gun->direction,
+        gun->damage);
 
     // Calculate left bullet direction (rotated by -15 degrees)
     Vector2 leftDirection;
@@ -100,13 +96,12 @@ void Gun_ShootShotgun(Gun *gun, Player *player)
     leftDirection.y = gun->direction.x * sin(-BULLET_ANGLE_OFFSET) + gun->direction.y * cos(-BULLET_ANGLE_OFFSET);
 
     Bullet_AddBulletInArray(
-        gun->bullets, 
-        gun->bulletImage, 
+        gun->bullets,
+        gun->bulletImage,
         player->rect.x + BULLET_DISTANCE_FROM_PLAYER * player->direction.x,
         player->rect.y + BULLET_DISTANCE_FROM_PLAYER * player->direction.y,
-        Vector2_Normalise(leftDirection), 
-        gun->damage
-    );
+        Vector2_Normalise(leftDirection),
+        gun->damage);
 
     // Calculate right bullet direction (rotated by +15 degrees)
     Vector2 rightDirection;
@@ -114,15 +109,32 @@ void Gun_ShootShotgun(Gun *gun, Player *player)
     rightDirection.y = gun->direction.x * sin(BULLET_ANGLE_OFFSET) + gun->direction.y * cos(BULLET_ANGLE_OFFSET);
 
     Bullet_AddBulletInArray(
-        gun->bullets, 
-        gun->bulletImage, 
+        gun->bullets,
+        gun->bulletImage,
         player->rect.x + BULLET_DISTANCE_FROM_PLAYER * player->direction.x,
         player->rect.y + BULLET_DISTANCE_FROM_PLAYER * player->direction.y,
-        Vector2_Normalise(rightDirection), 
-        gun->damage
-    );
+        Vector2_Normalise(rightDirection),
+        gun->damage);
 
     // Update the shoot timer
     gun->canShoot = false;
     gun->shootTime = SDL_GetTicks();
+}
+
+void Gun_changeGun(Gun *gun)
+{
+    if (gun->gunType == GUN_TYPE_PISTOL)
+    {
+        gun->damage = GUN_SHOTGUN_DAMAGE;
+        gun->coolDownTime = GUN_SHOTGUN_COOLDOWN_TIME;
+        gun->sound = Audio_LoadSound(GUN_SHOTGUN_AUDIO_PATH);
+    }
+    else
+    {
+        gun->damage = GUN_PISTOL_DAMAGE;
+        gun->coolDownTime = GUN_PISTOL_COOLDOWN_TIME;
+        gun->sound = Audio_LoadSound(GUN_PISTOL_AUDIO_PATH);
+    }
+    Mix_VolumeChunk(gun->sound, 50);
+
 }

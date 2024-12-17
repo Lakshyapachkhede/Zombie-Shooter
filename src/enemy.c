@@ -69,6 +69,9 @@ Enemy *Enemy_CreateEnemy(SDL_Renderer *renderer, Player *player, float x, float 
     enemy->damage = damage;
     enemy->attackTime = 0;
 
+    enemy->deathSound = Audio_LoadSound("../assets/audio/zombie_death2.wav");
+    Mix_VolumeChunk(enemy->deathSound, 40);
+
     return enemy;
 }
 
@@ -305,7 +308,12 @@ void Enemy_HandleBulletEnemyCollisions(EnemyArray *enemyArray, BulletArray *bull
                 enemy->player->score += 10;
 
                 if (enemy->health < 0) 
+                {  
+                    Audio_PlaySound(enemy->deathSound);
                     enemy->isDied = true;
+
+                }
+
 
 
                 // Remove the bullet from the array
