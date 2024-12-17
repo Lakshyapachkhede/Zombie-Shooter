@@ -134,6 +134,14 @@ void Player_RenderHealthBar(SDL_Renderer *renderer, Player *player, SDL_FRect *c
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 }
 
+void Player_ShowScore(Player *player ,SDL_Renderer *renderer)
+{   
+    char scoreText[64];
+    sprintf(scoreText, "score %d", player->score);
+    SDL_Color textColor = {255, 255, 255, 255}; 
+    Graphics_ShowText(renderer, scoreText, HEALTH_BAR_MARGIN, HEALTH_BAR_MARGIN, 24, textColor);
+}
+
 void Player_Update(Player *player, const Uint8 *keyState, SDL_Renderer *renderer, SDL_FRect *camera)
 {
     Player_Input(player, keyState);
@@ -141,6 +149,7 @@ void Player_Update(Player *player, const Uint8 *keyState, SDL_Renderer *renderer
     Player_Animate(player);
     Player_renderPlayer(player, renderer, camera);
     Player_RenderHealthBar(renderer, player, camera);
+    Player_ShowScore(player , renderer);
 }
 
 

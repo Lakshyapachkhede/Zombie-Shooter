@@ -18,6 +18,7 @@ void Audio_PlayBGM(Mix_Music *music);
 
 void Audio_CleanUpAudio();
 
+void Audio_StopMusic();
 
 
 

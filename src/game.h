@@ -11,7 +11,7 @@ void Game_gameLoop(SDL_Renderer *renderer, Player *player, Gun *gun, EnemyArray 
 void updateCamera(Player *player, SDL_FRect *camera);
 
 
-
+void Game_GameOverScreen(SDL_Renderer *renderer, bool *run, int score);
 
 
 #endif // GAME_H

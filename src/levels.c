@@ -54,19 +54,58 @@ void Level_loadMap(int levelNo)
     Map_loadLayersAndMap(levelNo);
 }
 
-void Level_generateEnemies(Uint32 *timeNow, Uint32 *prevTime, SDL_Renderer *renderer, Player *player, EnemyArray *enemies, Uint32 timeDifference, int numberOfEnemies)
+void Level_SpawnManager(Uint32 *currentTime, Uint32 *lastSpawnTime, Uint32 gameStartTime, SDL_Renderer *renderer, Player *player, EnemyArray *enemies)
 {
-    *timeNow = SDL_GetTicks();
-    if (*timeNow - *prevTime > timeDifference)
+    // Calculate elapsed game time
+    Uint32 elapsedTime = *currentTime - gameStartTime;
+
+    // Default values
+    Uint32 spawnInterval = 3000; // Time between spawns (ms)
+    int enemyHealth = 50;     // Enemy health
+    int numberOfEnemies = 3;  // Enemies to spawn per interval
+    int enemySpeed = 3;       // Enemy movement speed
+    int enemyDamage = 1;      // Enemy damage
+
+    // Adjust difficulty based on time thresholds
+    if (elapsedTime > 30000) // After 30 seconds
+    {
+        spawnInterval = 2500; // Spawn faster
+        numberOfEnemies = 4;  // Increase enemy count
+        enemyHealth = 60;     // Enemies have more health
+        enemySpeed = 4;       // Enemies move faster
+        enemyDamage = 2;      // Enemy damages more
+    }
+    if (elapsedTime > 60000) // After 60 seconds
+    {
+        spawnInterval = 2000;
+        numberOfEnemies = 5;
+        enemyHealth = 70;
+        enemySpeed = 5;
+        enemyDamage = 3;
+    }
+    if (elapsedTime > 120000) // After 120 seconds
+    {
+        spawnInterval = 1500;
+        numberOfEnemies = 6;
+        enemyHealth = 80;
+        enemySpeed = 5;
+        enemyDamage = 5;
+    }
+
+    if (*currentTime - *lastSpawnTime >= spawnInterval)
     {
         for (int i = 0; i < numberOfEnemies; i++)
         {
             float x, y;
             Utils_generateRandomCoordinates(&x, &y);
-            char filePath[64];
-            sprintf(filePath, "../assets/images/enemy/spider%d.png", Utils_generateRandomNumber(1, 11));
-            Enemy_AddEnemyInArray(enemies, renderer, player, x, y, filePath, 3, (Vector2){0, 0}, 4, 10000, 50, 1);
+
+            char spritePath[64];
+            sprintf(spritePath, "../assets/images/enemy/spider%d.png", Utils_generateRandomNumber(1, 11));
+
+            Enemy_AddEnemyInArray(enemies, renderer, player, x, y, spritePath, 3,
+                                  (Vector2){0, 0}, enemySpeed, 10000, enemyHealth, enemyDamage);
         }
-        *prevTime = *timeNow;
+
+        *lastSpawnTime = *currentTime;
     }
 }

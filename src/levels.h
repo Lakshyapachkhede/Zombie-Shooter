@@ -16,9 +16,7 @@
 int Level_getLevelNumberFromFile();
 void Level_updateLevelNumber(int levelNo);
 void Level_loadMap(int levelNo);
-void Level_generateEnemies(Uint32 *timeNow, Uint32 *prevTime, SDL_Renderer *renderer, Player *player, EnemyArray *enemies, Uint32 timeDifference, int numberOfEnemies);
-
-
+void Level_SpawnManager(Uint32 *currentTime, Uint32 *lastSpawnTime, Uint32 gameStartTime, SDL_Renderer *renderer, Player *player, EnemyArray *enemies);
 
 
 #endif // LEVELS_H

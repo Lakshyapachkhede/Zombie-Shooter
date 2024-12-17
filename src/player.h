@@ -53,5 +53,5 @@ void Player_RenderHealthBar(SDL_Renderer *renderer, Player *player, SDL_FRect *c
 
 void Player_Update(Player *player, const Uint8 *keyState, SDL_Renderer *renderer, SDL_FRect *camera);
 
-
+void Player_ShowScore(Player *player ,SDL_Renderer *renderer);
 #endif

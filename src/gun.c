@@ -55,7 +55,7 @@ void Gun_Shoot(Gun *gun, Player *player)
 {
     if (gun->gunType == GUN_TYPE_PISTOL)
         Gun_ShootPistol(gun, player);
-    else
+    else if (gun->gunType == GUN_TYPE_SHOTGUN)
         Gun_ShootShotgun(gun, player);
 }
 
@@ -124,13 +124,15 @@ void Gun_ShootShotgun(Gun *gun, Player *player)
 void Gun_changeGun(Gun *gun)
 {
     if (gun->gunType == GUN_TYPE_PISTOL)
-    {
+    {   
+        gun->gunType = GUN_TYPE_SHOTGUN;
         gun->damage = GUN_SHOTGUN_DAMAGE;
         gun->coolDownTime = GUN_SHOTGUN_COOLDOWN_TIME;
         gun->sound = Audio_LoadSound(GUN_SHOTGUN_AUDIO_PATH);
     }
-    else
+    else if (gun->gunType == GUN_TYPE_SHOTGUN)
     {
+        gun->gunType = GUN_TYPE_PISTOL;
         gun->damage = GUN_PISTOL_DAMAGE;
         gun->coolDownTime = GUN_PISTOL_COOLDOWN_TIME;
         gun->sound = Audio_LoadSound(GUN_PISTOL_AUDIO_PATH);

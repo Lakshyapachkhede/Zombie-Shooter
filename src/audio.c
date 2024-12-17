@@ -44,6 +44,11 @@ void Audio_PlayMusic(Mix_Music *music)
     Mix_PlayMusic(music, 0);
 }
 
+void Audio_StopMusic()
+{
+    Mix_HaltMusic();
+}
+
 void Audio_PlayBGM(Mix_Music *music)
 {
     Mix_PlayMusic(music, -1);
