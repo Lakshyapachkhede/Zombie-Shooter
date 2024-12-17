@@ -11,12 +11,25 @@
 #include "audio.h"
 #include "player.h"
 #include "utils.h"
+#include <math.h> 
 
-#define GUN_PISTOL_DAMAGE 50
+#define GUN_PISTOL_AUDIO_PATH "../assets/audio/pistol.wav"
+#define GUN_SHOTGUN_AUDIO_PATH "../assets/audio/shotgun.wav"
+
+#define GUN_TYPE_PISTOL 0
+#define GUN_TYPE_SHOTGUN 1
+
+#define GUN_PISTOL_DAMAGE 100
+#define GUN_SHOTGUN_DAMAGE 125
+
+#define GUN_PISTOL_COOLDOWN_TIME 100
+#define GUN_SHOTGUN_COOLDOWN_TIME 500
 
 #define GUN_AIM_DISTANCE 100
 #define GUN_AIM_SIZE 30
 #define INITIAL_BULLET_NO 10
+
+#define BULLET_ANGLE_OFFSET 0.261799f 
 
 typedef struct 
 {
@@ -37,9 +50,11 @@ typedef struct
 
     int damage;
 
+    int gunType;
+
 }Gun;
 
-Gun *Gun_CreateGun(SDL_Renderer *renderer, int coolDownTime, char *soundPath, char *aimImagePath, char *bulletImagePath, int damage);
+Gun *Gun_CreateGun(SDL_Renderer *renderer, int gunType, char *aimImagePath, char *bulletImagePath);
 
 void Gun_Input(Gun *gun, Player *player, Uint32 buttons, int mouseX, int mouseY);
 
@@ -49,5 +64,7 @@ void Gun_Shoot(Gun *gun, Player *player);
 
 void Gun_Update(Gun *gun, SDL_Renderer *renderer, Player *player, Uint32 buttons, int mouseX, int mouseY, SDL_FRect *camera);
 
+void Gun_ShootPistol(Gun *gun, Player *player);
+void Gun_ShootShotgun(Gun *gun, Player *player);
 
 #endif

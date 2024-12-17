@@ -1,7 +1,4 @@
 #include "levels.h"
-#include "map.h"
-#include <stdio.h>
-
 
 int Level_getLevelNumberFromFile()
 {
@@ -41,7 +38,7 @@ int Level_getLevelNumberFromFile()
 
 void Level_updateLevelNumber(int levelNo)
 {
-    FILE* f = fopen("../data/level.txt", "w");
+    FILE *f = fopen("../data/level.txt", "w");
     if (f == NULL)
     {
         perror("Error updating level file");
@@ -57,4 +54,19 @@ void Level_loadMap(int levelNo)
     Map_loadLayersAndMap(levelNo);
 }
 
-
+void Level_generateEnemies(Uint32 *timeNow, Uint32 *prevTime, SDL_Renderer *renderer, Player *player, EnemyArray *enemies, Uint32 timeDifference, int numberOfEnemies)
+{
+    *timeNow = SDL_GetTicks();
+    if (*timeNow - *prevTime > timeDifference)
+    {
+        for (int i = 0; i < numberOfEnemies; i++)
+        {
+            float x, y;
+            Utils_generateRandomCoordinates(&x, &y);
+            char filePath[64];
+            sprintf(filePath, "../assets/images/enemy/spider%d.png", Utils_generateRandomNumber(1, 11));
+            Enemy_AddEnemyInArray(enemies, renderer, player, x, y, filePath, 3, (Vector2){0, 0}, 4, 10000, 50, 1);
+        }
+        *prevTime = *timeNow;
+    }
+}

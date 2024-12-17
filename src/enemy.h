@@ -78,6 +78,9 @@ typedef struct
     bool isDied;
     Uint32 deathTime;
     Uint32 deathDuration;
+
+    int damage;
+    Uint32 attackTime;
 }Enemy;
 
 typedef struct 
@@ -90,7 +93,7 @@ typedef struct
 SDL_Texture *bloodTexture;
 
 void Enemy_Init(SDL_Renderer *renderer);
-Enemy *Enemy_CreateEnemy(SDL_Renderer *renderer, Player *player, float x, float y, char *spriteSheetPath, int animationSpeed, Vector2 direction, int speed, int deathDuration, int health);
+Enemy *Enemy_CreateEnemy(SDL_Renderer *renderer, Player *player, float x, float y, char *spriteSheetPath, int animationSpeed, Vector2 direction, int speed, int deathDuration, int health, int damage);
 void Enemy_UpdateDirection(Enemy *enemy);
 void Enemy_move(Enemy *enemy);
 void Enemy_Animate(Enemy *enemy);
@@ -100,7 +103,7 @@ void Enemy_Update(Enemy *enemy, SDL_Renderer *renderer, SDL_FRect *camera, Enemy
 
 
 EnemyArray *Enemy_CreateEnemyArray(size_t capacity);
-void Enemy_AddEnemyInArray(EnemyArray *array, SDL_Renderer *renderer, Player *player, float x, float y, char *spriteSheetPath, int animationSpeed, Vector2 direction, int speed, int deathDuration, int health);
+void Enemy_AddEnemyInArray(EnemyArray *array, SDL_Renderer *renderer, Player *player, float x, float y, char *spriteSheetPath, int animationSpeed, Vector2 direction, int speed, int deathDuration, int health, int damage);
 void Enemy_RemoveEnemyFromArray(EnemyArray *array, size_t index);
 void Enemy_RenderEnemiesFromArray(EnemyArray *array, SDL_Renderer *renderer, SDL_FRect *camera);
 void Enemy_DestroyEnemyArray(EnemyArray *array);

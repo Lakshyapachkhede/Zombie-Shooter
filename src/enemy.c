@@ -41,7 +41,7 @@ void Enemy_Init(SDL_Renderer *renderer)
     bloodTexture = Graphics_getTextureFromPath(renderer, "../assets/images/blood/4.png");
 }
 
-Enemy *Enemy_CreateEnemy(SDL_Renderer *renderer, Player *player, float x, float y, char *spriteSheetPath, int animationSpeed, Vector2 direction, int speed, int deathDuration, int health)
+Enemy *Enemy_CreateEnemy(SDL_Renderer *renderer, Player *player, float x, float y, char *spriteSheetPath, int animationSpeed, Vector2 direction, int speed, int deathDuration, int health, int damage)
 {
     Enemy *enemy = (Enemy *)malloc(sizeof(Enemy));
 
@@ -65,6 +65,9 @@ Enemy *Enemy_CreateEnemy(SDL_Renderer *renderer, Player *player, float x, float 
     enemy->isDied = false;
     enemy->deathTime = 0;
     enemy->deathDuration = deathDuration;
+
+    enemy->damage = damage;
+    enemy->attackTime = 0;
 
     return enemy;
 }
@@ -135,6 +138,17 @@ void Enemy_UpdateEnemyPositionOnCollision(Enemy *enemy, EnemyArray *otherEnemies
     }
 }
 
+void Enemy_AttackPlayer(Enemy *enemy)
+{   if (!enemy->attackTime)
+        enemy->attackTime = SDL_GetTicks();
+    
+    if (SDL_GetTicks() - enemy->attackTime > 1000 && Collision_CheckCollisionF(&enemy->rect, &enemy->player->rect))
+    { 
+        enemy->player->health -= enemy->damage;
+        enemy->attackTime = SDL_GetTicks();
+    }
+}
+
 void Enemy_Animate(Enemy *enemy)
 {
     if (fabs(enemy->direction.x) > fabs(enemy->direction.y))
@@ -177,6 +191,7 @@ void Enemy_Update(Enemy *enemy, SDL_Renderer *renderer, SDL_FRect *camera, Enemy
     Enemy_UpdateDirection(enemy);
     Enemy_move(enemy);
     Enemy_UpdateEnemyPositionOnCollision(enemy, otherEnemies);
+    Enemy_AttackPlayer(enemy);
     Enemy_Animate(enemy);
     Enemy_renderEnemy(enemy, renderer, camera);
 }
@@ -191,7 +206,7 @@ EnemyArray *Enemy_CreateEnemyArray(size_t capacity)
     return array;
 }
 
-void Enemy_AddEnemyInArray(EnemyArray *array, SDL_Renderer *renderer, Player *player, float x, float y, char *spriteSheetPath, int animationSpeed, Vector2 direction, int speed, int deathDuration, int health)
+void Enemy_AddEnemyInArray(EnemyArray *array, SDL_Renderer *renderer, Player *player, float x, float y, char *spriteSheetPath, int animationSpeed, Vector2 direction, int speed, int deathDuration, int health, int damage)
 {
     if (array->size >= array->capacity)
     {
@@ -199,7 +214,7 @@ void Enemy_AddEnemyInArray(EnemyArray *array, SDL_Renderer *renderer, Player *pl
         array->enemies = (Enemy **)realloc(array->enemies, array->capacity * sizeof(Enemy *));
     }
 
-    array->enemies[array->size++] = Enemy_CreateEnemy(renderer, player, x, y, spriteSheetPath, animationSpeed, direction, speed, deathDuration, health);
+    array->enemies[array->size++] = Enemy_CreateEnemy(renderer, player, x, y, spriteSheetPath, animationSpeed, direction, speed, deathDuration, health, damage);
 }
 
 void Enemy_RemoveEnemyFromArray(EnemyArray *array, size_t index)
@@ -276,6 +291,9 @@ void Enemy_HandleBulletEnemyCollisions(EnemyArray *enemyArray, BulletArray *bull
         {
             Enemy *enemy = enemyArray->enemies[j];
 
+            if (enemy->isDied)
+                continue;
+
             // Check if the bullet's rectangle intersects with the enemy's rectangle
             if (Collision_CheckCollisionF(&bullet->rect, &enemy->rect))
             {
@@ -284,9 +302,11 @@ void Enemy_HandleBulletEnemyCollisions(EnemyArray *enemyArray, BulletArray *bull
 
                 // Remove the enemy from the array
                 enemy->health -= bullet->damage;
+                enemy->player->score += 10;
 
                 if (enemy->health < 0) 
                     enemy->isDied = true;
+
 
                 // Remove the bullet from the array
                 Bullet_RemoveBulletFromArray(bulletArray, i);

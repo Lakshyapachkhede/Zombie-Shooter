@@ -6,7 +6,7 @@
 #include "settings.h"
 
 
-Player *Player_createPlayer(SDL_Renderer *renderer, float x, float y, char *animationFramesPath, int speed, int animationSpeed)
+Player *Player_createPlayer(SDL_Renderer *renderer, float x, float y, char *animationFramesPath, int speed, int animationSpeed, int health)
 {
     Player *player = (Player*) malloc(sizeof(Player));
     
@@ -26,6 +26,10 @@ Player *Player_createPlayer(SDL_Renderer *renderer, float x, float y, char *anim
     player->rect.h = playerHeight;
 
     player->animationSpeed = animationSpeed;
+
+    player->health = health; 
+
+    player->score = 0;
 
     return player;
 
@@ -101,6 +105,34 @@ void Player_renderPlayer(Player *player, SDL_Renderer *renderer, SDL_FRect *came
 
 }
 
+void Player_RenderHealthBar(SDL_Renderer *renderer, Player *player, SDL_FRect *camera)
+{
+    // Define position and size
+    SDL_Rect fullBarRect = {
+        (int)(camera->w - HEALTH_BAR_WIDTH - HEALTH_BAR_MARGIN),
+        (int)(HEALTH_BAR_MARGIN),
+        HEALTH_BAR_WIDTH,
+        HEALTH_BAR_HEIGHT
+    };
+
+    int healthBarCurrentWidth = (int)((player->health / (float)PLAYER_MAX_HEALTH) * HEALTH_BAR_WIDTH);
+
+    SDL_Rect currentHealthRect = {
+        fullBarRect.x,
+        fullBarRect.y,
+        healthBarCurrentWidth,
+        HEALTH_BAR_HEIGHT
+    };
+
+    // Render bars
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); 
+    SDL_RenderFillRect(renderer, &fullBarRect);
+
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_RenderFillRect(renderer, &currentHealthRect);
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+}
 
 void Player_Update(Player *player, const Uint8 *keyState, SDL_Renderer *renderer, SDL_FRect *camera)
 {
@@ -108,5 +140,7 @@ void Player_Update(Player *player, const Uint8 *keyState, SDL_Renderer *renderer
     Player_move(player);
     Player_Animate(player);
     Player_renderPlayer(player, renderer, camera);
-
+    Player_RenderHealthBar(renderer, player, camera);
 }
+
+
