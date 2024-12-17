@@ -1,3 +1,6 @@
+## Spider Shooter
+
+---
 **Spider-Shooter** is a simple 2D shooter game developed in **C** using the **SDL2 library**. Players shoot spiders in a straightforward 2D environment, demonstrating key game development techniques.
 
 ---
