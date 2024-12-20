@@ -47,12 +47,16 @@ void Game_gameLoop(SDL_Renderer *renderer, Player *player, Gun *gun, EnemyArray 
             Audio_StopMusic();
             Audio_PlaySound(Audio_LoadSound("../assets/audio/player_death.wav"));
             Game_GameOverScreen(renderer, &run, player->score);
+
             // Reset the game state after the game over screen
             Audio_PlayBGM(bgm);
             Mix_VolumeMusic(100);
             Game_initGame(renderer, 1, &player, &gun, &enemies, &camera);
             gameStartTime = SDL_GetTicks();
             lastSpawnTime = 0;
+
+            powerupGun = Powerup_CreatePowerup(renderer, POWERUP_TYPE_SHOTGUN);
+            powerupHealth = Powerup_CreatePowerup(renderer, POWERUP_TYPE_HEALTH);
             continue;
         }
 
@@ -117,13 +121,16 @@ void Game_GameOverScreen(SDL_Renderer *renderer, bool *run, int score)
 
     SDL_Texture *gameOverText = Graphics_getTextTexture(renderer, "Game Over", 72, white);
     SDL_Texture *restartText = Graphics_getTextTexture(renderer, "Press  Enter  to  Restart", 36, white);
+    SDL_Texture *devText = Graphics_getTextTexture(renderer, "Lakshya  Pachkhede", 24, white);
 
-    int gw, gh, rw, rh;
+    int gw, gh, rw, rh, dw, dh;
     SDL_QueryTexture(gameOverText, NULL, NULL, &gw, &gh);
     SDL_QueryTexture(restartText, NULL, NULL, &rw, &rh);
+    SDL_QueryTexture(devText, NULL, NULL, &dw, &dh);
     
     SDL_Rect gameOverRect = {(WINDOW_WIDTH / 2) - (gw / 2), (WINDOW_HEIGHT / 2) - (gh / 2) - 50, gw, gh};
     SDL_Rect restartRect = {(WINDOW_WIDTH / 2) - (rw / 2), (WINDOW_HEIGHT / 2) + 50, rw, rh};
+    SDL_Rect devRect = {WINDOW_WIDTH - dw - HEALTH_BAR_MARGIN, WINDOW_HEIGHT - dh - HEALTH_BAR_MARGIN, dw, dh};
 
     char scoreText[64];
     sprintf(scoreText, "score %d", score);
@@ -148,6 +155,7 @@ void Game_GameOverScreen(SDL_Renderer *renderer, bool *run, int score)
 
         Graphics_renderTexture(renderer, gameOverText, &gameOverRect);
         Graphics_renderTexture(renderer, restartText, &restartRect);
+        Graphics_renderTexture(renderer, devText, &devRect);
         Graphics_ShowText(renderer, scoreText, HEALTH_BAR_MARGIN, HEALTH_BAR_MARGIN, 24, white);
 
         Graphics_presentScreen(renderer);

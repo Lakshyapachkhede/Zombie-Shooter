@@ -2,7 +2,7 @@
 #define SETTINGS_H
 
 
-#define GAME_NAME "Spider Shooter"
+#define GAME_NAME "Spider Shooter - Lakshya Pachkhede"
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 #define MAP_SIZE 32
